@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -10,23 +12,29 @@ import { Property } from './property.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: String;
+  id: number;
 
   @Column()
-  firstName: String;
+  firstName: string;
 
   @Column()
-  lastName: String;
+  lastName: string;
 
   @Column()
-  email: String;
+  email: string;
 
   @Column()
-  avatarUrl: String;
+  avatarUrl: string;
 
   @CreateDateColumn()
   createdAt: Date;
 
-  // @ OneToMany()
+  @OneToMany(() => Property, (property) => property.user)
   properties: Property[];
+
+  @ManyToMany(() => Property, (property) => property.likedBy)
+  @JoinTable({ name: 'user_liked_properties' })
+  likedProperties: Property[];
 }
+
+// 184 - 12 = 172 hours now I have 173.5 hours to complete I need 2.5 hours
