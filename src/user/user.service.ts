@@ -33,8 +33,17 @@ export class UserService {
       where: {
         id,
       },
-      select: ['firstName', 'lastName', 'avatarUrl'],
+      select: ['firstName', 'lastName', 'avatarUrl', 'hashedRefreshToken'],
     });
+  }
+
+  async updateHashedRefreshToken(userId: number, hashedRefreshToken: string) {
+    return await this.userRepository.update(
+      {
+        id: userId,
+      },
+      { hashedRefreshToken },
+    );
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
