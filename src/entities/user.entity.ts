@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -8,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Property } from './property.entity';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -29,12 +31,18 @@ export class User {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column({ default: 'changeme123' })
+  password: string;
+
   @OneToMany(() => Property, (property) => property.user)
   properties: Property[];
 
   @ManyToMany(() => Property, (property) => property.likedBy)
   @JoinTable({ name: 'user_liked_properties' })
   likedProperties: Property[];
-}
 
-// 184 - 12 = 172 hours now I have 173.5 hours to complete I need 2.5 hours
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+}
