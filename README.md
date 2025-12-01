@@ -527,43 +527,247 @@ getPublicData() {
 
 ## 🗄️ Database Schema
 
-### **Entity Relationships**
+### **Entity Relationship Diagram (ERD)**
+
+The database schema is designed with proper normalization and follows relational database best practices. Below is the comprehensive entity relationship structure:
 
 ```
-User
-├── id (PK)
-├── firstName
-├── lastName
-├── email (unique)
-├── password (hashed)
-├── avatarUrl
-├── role (enum: ADMIN, EDITOR, USER)
-├── hashedRefreshToken
-├── createdAt
-└── properties (One-to-Many)
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          DATABASE ARCHITECTURE                               │
+└─────────────────────────────────────────────────────────────────────────────┘
 
-Property
-├── id (PK)
-├── name
-├── description
-├── price
-├── ownerId (FK -> User)
-├── propertyTypeId (FK -> PropertyType)
-├── propertyFeature (One-to-One -> PropertyFeature)
-├── user (Many-to-One -> User)
-├── likedBy (Many-to-Many -> User)
-└── type (Many-to-One -> PropertyType)
+                                    ┌──────────────┐
+                                    │     User     │
+                                    ├──────────────┤
+                                    │ id (PK)      │
+                                    │ firstName    │
+                                    │ lastName     │
+                                    │ email        │
+                                    │ avatarUrl    │
+                                    │ password     │
+                                    │ role         │
+                                    │ refreshToken │
+                                    │ createdAt    │
+                                    └──────┬───────┘
+                                           │
+                                           │ 1:N (Owner)
+                                           │
+                    ┌──────────────────────┴───────────────┐
+                    │                                       │
+                    │                                       │
+            ┌───────▼────────┐                    ┌────────▼─────────┐
+            │  Subscriptions │                    │    Contract      │
+            ├────────────────┤                    ├──────────────────┤
+            │ userId (FK)    │                    │ id (PK)          │
+            │ paymentId      │                    │ propertyId (FK)  │
+            │ createdAt      │                    │ name             │
+            │ updatedAt      │                    │ phone            │
+            │ planId         │                    │ email            │
+            │ id (PK)        │                    └──────────────────┘
+            └────────────────┘
+                    
+                    
+            ┌────────────────────────────────────────────────┐
+            │                   Property                     │
+            ├────────────────────────────────────────────────┤
+            │ id (PK)                                        │
+            │ typeId (FK) ──────────────────┐               │
+            │ name                           │               │
+            │ description                    │               │
+            │ price                          │               │
+            │ statusId                       │               │
+            │ userId (FK) ───────────────────┼───────────┐   │
+            └─────────┬──────────────────────┘           │   │
+                      │ 1:1                              │   │
+                      │                                  │   │
+            ┌─────────▼──────────────┐          ┌────────▼───▼────────┐
+            │   PropertyFeature      │          │     PropertyType     │
+            ├────────────────────────┤          ├──────────────────────┤
+            │ id (PK)                │          │ id (PK)              │
+            │ propertyId (FK)        │          │ value                │
+            │ bedrooms               │          └──────────────────────┘
+            │ bathrooms              │
+            │ parkingSpots           │          ┌──────────────────────┐
+            │ area                   │          │    PropertyImage     │
+            │ hasSwimmingPool        │          ├──────────────────────┤
+            │ hasBalcony             │          │ id (PK)              │
+            │ hasGardenYard          │          │ url                  │
+            └────────────────────────┘          │ propertyId (FK)      │
+                                                └──────────────────────┘
 
-PropertyFeature
-├── id (PK)
-├── propertyId (FK -> Property)
-└── property (One-to-One -> Property)
-
-PropertyType
-├── id (PK)
-├── name
-└── properties (One-to-Many -> Property)
+            ┌────────────────────────────────────────────────┐
+            │              Entity (Generic)                  │
+            ├────────────────────────────────────────────────┤
+            │ id (PK)                                        │
+            │ value                                          │
+            └────────────────────────────────────────────────┘
 ```
+
+### **Detailed Entity Specifications**
+
+#### **👤 User Entity**
+Primary entity for user management and authentication.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | Integer | PRIMARY KEY, AUTO_INCREMENT | Unique user identifier |
+| `firstName` | String | NOT NULL | User's first name |
+| `lastName` | String | NOT NULL | User's last name |
+| `email` | String | UNIQUE, NOT NULL | User's email address |
+| `password` | String | NOT NULL | Bcrypt hashed password |
+| `avatarUrl` | String | NULLABLE | URL to user's profile picture |
+| `role` | Enum | DEFAULT 'USER' | User role (ADMIN, EDITOR, USER) |
+| `hashedRefreshToken` | String | NULLABLE | Argon2 hashed refresh token |
+| `createdAt` | DateTime | DEFAULT NOW() | Account creation timestamp |
+
+**Relationships:**
+- `properties` → One-to-Many with Property (as owner)
+- `likedProperties` → Many-to-Many with Property (liked properties)
+- `subscriptions` → One-to-Many with Subscriptions
+- `contracts` → One-to-Many with Contract
+
+---
+
+#### **🏠 Property Entity**
+Core entity for property management.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | Integer | PRIMARY KEY, AUTO_INCREMENT | Unique property identifier |
+| `name` | String | NOT NULL, LENGTH(2-10) | Property name/title |
+| `description` | String | NOT NULL | Detailed property description |
+| `price` | Integer | DEFAULT 0, POSITIVE | Property price in base currency |
+| `statusId` | Integer | FOREIGN KEY | Property listing status |
+| `userId` | Integer | FOREIGN KEY → User | Property owner reference |
+| `typeId` | Integer | FOREIGN KEY → PropertyType | Property type reference |
+
+**Relationships:**
+- `user` → Many-to-One with User (owner)
+- `type` → Many-to-One with PropertyType
+- `propertyFeature` → One-to-One with PropertyFeature
+- `likedBy` → Many-to-Many with User
+- `images` → One-to-Many with PropertyImage
+- `contracts` → One-to-Many with Contract
+
+**Validations:**
+- Name length: 2-10 characters
+- Price must be positive integer
+- Description required
+
+---
+
+#### **✨ PropertyFeature Entity**
+Detailed features and amenities for each property.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | Integer | PRIMARY KEY, AUTO_INCREMENT | Unique feature record ID |
+| `propertyId` | Integer | FOREIGN KEY → Property, UNIQUE | Associated property |
+| `bedrooms` | Integer | NOT NULL | Number of bedrooms |
+| `bathrooms` | Integer | NOT NULL | Number of bathrooms |
+| `parkingSpots` | Integer | NOT NULL | Number of parking spaces |
+| `area` | Integer | NOT NULL | Property area in sq ft/m |
+| `hasSwimmingPool` | Boolean | DEFAULT FALSE | Swimming pool availability |
+| `hasBalcony` | Boolean | DEFAULT FALSE | Balcony availability |
+| `hasGardenYard` | Boolean | DEFAULT FALSE | Garden/yard availability |
+
+**Relationships:**
+- `property` → One-to-One with Property
+
+---
+
+#### **🏷️ PropertyType Entity**
+Categorization of property types (Villa, Apartment, House, etc.).
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | Integer | PRIMARY KEY, AUTO_INCREMENT | Unique type identifier |
+| `value` | String | NOT NULL, UNIQUE | Type name (e.g., "Villa", "Apartment") |
+
+**Relationships:**
+- `properties` → One-to-Many with Property
+
+---
+
+#### **🖼️ PropertyImage Entity**
+Multiple images for property listings.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | Integer | PRIMARY KEY, AUTO_INCREMENT | Unique image identifier |
+| `url` | String | NOT NULL | Image URL or path |
+| `propertyId` | Integer | FOREIGN KEY → Property | Associated property |
+
+**Relationships:**
+- `property` → Many-to-One with Property
+
+---
+
+#### **💳 Subscriptions Entity**
+User subscription and payment management.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | Integer | PRIMARY KEY, AUTO_INCREMENT | Unique subscription ID |
+| `userId` | Integer | FOREIGN KEY → User | Subscriber reference |
+| `paymentId` | String | NOT NULL | Payment gateway transaction ID |
+| `planId` | Integer | NOT NULL | Subscription plan identifier |
+| `createdAt` | DateTime | DEFAULT NOW() | Subscription start date |
+| `updatedAt` | DateTime | AUTO_UPDATE | Last update timestamp |
+
+**Relationships:**
+- `user` → Many-to-One with User
+
+---
+
+#### **📄 Contract Entity**
+Property rental/purchase contract management.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | Integer | PRIMARY KEY, AUTO_INCREMENT | Unique contract identifier |
+| `propertyId` | Integer | FOREIGN KEY → Property | Associated property |
+| `name` | String | NOT NULL | Contract holder name |
+| `phone` | String | NOT NULL | Contact phone number |
+| `email` | String | NOT NULL | Contact email address |
+
+**Relationships:**
+- `property` → Many-to-One with Property
+
+---
+
+#### **🏗️ Entity (Generic)**
+Generic entity for flexible data storage.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | Integer | PRIMARY KEY, AUTO_INCREMENT | Unique identifier |
+| `value` | String | NOT NULL | Generic value storage |
+
+---
+
+### **Database Relationships Summary**
+
+| Relationship Type | From Entity | To Entity | Description |
+|-------------------|-------------|-----------|-------------|
+| **One-to-Many** | User | Property | User owns multiple properties |
+| **One-to-Many** | User | Subscriptions | User has multiple subscriptions |
+| **One-to-Many** | PropertyType | Property | Type categorizes properties |
+| **One-to-Many** | Property | PropertyImage | Property has multiple images |
+| **One-to-One** | Property | PropertyFeature | Property has one feature set |
+| **Many-to-Many** | User | Property | Users can like multiple properties |
+| **Many-to-One** | Contract | Property | Multiple contracts per property |
+
+### **Database Features & Optimizations**
+
+✅ **Normalized Schema** - Third Normal Form (3NF) compliance  
+✅ **Indexed Foreign Keys** - Fast join operations  
+✅ **Cascade Operations** - Automatic referential integrity  
+✅ **Enum Types** - Type-safe role management  
+✅ **Timestamp Tracking** - Automatic created/updated timestamps  
+✅ **Unique Constraints** - Data integrity enforcement  
+✅ **Default Values** - Consistent data initialization  
+✅ **Transaction Support** - ACID compliance  
 
 ---
 
