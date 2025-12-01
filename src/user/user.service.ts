@@ -33,7 +33,13 @@ export class UserService {
       where: {
         id,
       },
-      select: ['firstName', 'lastName', 'avatarUrl', 'hashedRefreshToken'],
+      select: [
+        'firstName',
+        'lastName',
+        'avatarUrl',
+        'hashedRefreshToken',
+        'role',
+      ],
     });
   }
 

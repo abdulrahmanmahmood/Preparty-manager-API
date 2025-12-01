@@ -13,6 +13,9 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/role.enum';
+import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
 
 @Controller('user')
 export class UserController {
@@ -37,6 +40,7 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @Roles(Role.ADMIN, Role.EDITOR)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
