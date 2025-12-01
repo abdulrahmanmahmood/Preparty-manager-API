@@ -1,73 +1,740 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# 🏢 Property Manager API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<div align="center">
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![TypeORM](https://img.shields.io/badge/TypeORM-FE0902?style=for-the-badge&logo=typeorm&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Passport](https://img.shields.io/badge/Passport-34E27A?style=for-the-badge&logo=passport&logoColor=white)
 
-## Description
+**A Production-Ready RESTful API built with NestJS, TypeORM, and PostgreSQL**
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Features](#-features) • [Architecture](#-architecture) • [Installation](#-installation) • [API Documentation](#-api-documentation) • [Security](#-security)
 
-## Installation
+</div>
 
-```bash
-$ npm install
+---
+
+## 📋 Table of Contents
+
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Technical Highlights](#-technical-highlights)
+- [Project Architecture](#-architecture)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Configuration](#-configuration)
+- [API Documentation](#-api-documentation)
+- [Authentication & Authorization](#-authentication--authorization)
+- [Database Schema](#-database-schema)
+- [Testing](#-testing)
+- [Project Structure](#-project-structure)
+
+---
+
+## 🎯 Overview
+
+**Property Manager API** is a robust, scalable, and enterprise-grade backend application designed to demonstrate advanced backend development skills using **NestJS** and **TypeORM**. This project showcases best practices in modern backend architecture, including clean code principles, SOLID design patterns, comprehensive authentication strategies, and production-ready features.
+
+The API provides a complete property management system with advanced user authentication, role-based access control, and comprehensive CRUD operations, making it an excellent portfolio piece for demonstrating backend engineering expertise.
+
+---
+
+## 🚀 Key Features
+
+### 🔐 **Advanced Authentication & Authorization**
+
+- **Multiple Authentication Strategies**:
+  - 🔑 **Local Authentication** (Email/Password with bcrypt hashing)
+  - 🔄 **JWT Access & Refresh Token** mechanism
+  - 🌐 **Google OAuth 2.0** integration
+  - 🛡️ **Argon2** hashing for refresh tokens (more secure than bcrypt)
+
+- **Comprehensive Security**:
+  - Role-Based Access Control (RBAC) with custom guards
+  - Protected routes with `@Public()` decorator
+  - Secure password hashing with bcrypt
+  - Token refresh mechanism for session management
+  - Automatic token validation and expiration handling
+
+### 👥 **Role-Based Access Control (RBAC)**
+
+- **Three-Tier Role System**:
+  - 👤 **USER** - Standard user access
+  - ✏️ **EDITOR** - Enhanced permissions
+  - 👑 **ADMIN** - Full system access
+
+- **Custom Role Guards**:
+  - `@Roles()` decorator for route-level authorization
+  - Reflector-based metadata handling
+  - Flexible permission management
+
+### 🏠 **Property Management System**
+
+- **Complete CRUD Operations**:
+  - ✅ Create, Read, Update, Delete properties
+  - 📄 Pagination support with customizable limit/offset
+  - 🔍 Advanced filtering and search capabilities
+  - 📊 Structured API responses with metadata
+
+- **Property Features**:
+  - Property types categorization
+  - One-to-One relationships with property features
+  - Many-to-One relationships with users (owners)
+  - Many-to-Many relationships for liked properties
+  - Price management and description handling
+
+### 👤 **User Management**
+
+- **User Operations**:
+  - User registration and profile management
+  - Secure password handling with automatic hashing
+  - Avatar URL support
+  - User-property relationships
+  - Refresh token management
+
+### 🎨 **Clean Architecture & Design Patterns**
+
+- **Modular Structure**:
+  - Feature-based module organization
+  - Separation of concerns (Controllers, Services, Repositories)
+  - Dependency Injection (DI) throughout
+  - DTOs for data validation and transformation
+
+- **Code Quality**:
+  - TypeScript strict mode
+  - Class-validator for DTO validation
+  - Class-transformer for object mapping
+  - Custom pipes for validation
+  - Global validation pipes
+  - Comprehensive error handling
+
+### 🛠️ **Advanced Backend Features**
+
+- **Validation & Transformation**:
+  - 📝 **class-validator** for DTO validation
+  - 🔄 **class-transformer** for object transformation
+  - 🎯 **Zod** integration for schema validation
+  - Custom validation pipes (ZodValidationPipe, ParseIdPipe)
+  - Request header validation
+  - Whitelist and forbidNonWhitelisted global validation
+
+- **Database Features**:
+  - 🗄️ TypeORM with PostgreSQL
+  - Entity relationships (One-to-One, One-to-Many, Many-to-Many)
+  - Database migrations support
+  - Automatic entity synchronization (dev mode)
+  - Repository pattern implementation
+  - Factory pattern for data seeding
+
+- **Data Seeding**:
+  - 🌱 **Faker.js** integration for realistic test data
+  - Custom factories for entities (User, Property, PropertyFeature)
+  - Automated seeding scripts
+  - Database reset and reseed capabilities
+
+- **Configuration Management**:
+  - ⚙️ Environment-based configuration
+  - @nestjs/config module integration
+  - Separate configs for development and production
+  - Type-safe configuration with ConfigType
+  - JWT configuration modules
+
+### 📊 **API Response Standards**
+
+- **Standardized Responses**:
+  - Generic `ApiResponseDto<T>` for single resources
+  - `PaginatedResponseDto<T>` for collections
+  - Consistent error handling
+  - Metadata inclusion (total, hasNextPage, hasPreviousPage)
+
+### 🧪 **Testing Infrastructure**
+
+- **Testing Setup**:
+  - Jest configuration for unit tests
+  - E2E testing setup
+  - Test coverage reporting
+  - Guard testing examples
+  - Controller testing examples
+
+---
+
+## 💎 Technical Highlights
+
+### **Enterprise-Grade Features**
+
+✅ **Clean Code Architecture** - Following SOLID principles and clean architecture patterns  
+✅ **Dependency Injection** - Full utilization of NestJS's powerful DI system  
+✅ **Type Safety** - Comprehensive TypeScript usage with strict mode  
+✅ **Security First** - Multiple layers of authentication and authorization  
+✅ **Scalable Structure** - Modular design ready for feature expansion  
+✅ **Production Ready** - Environment-based configuration and error handling  
+✅ **Database Best Practices** - Proper relationships, indexes, and migrations  
+✅ **API Design** - RESTful principles with consistent response patterns  
+✅ **Validation Layer** - Multiple validation strategies (class-validator, Zod)  
+✅ **Documentation** - Well-structured code with clear separation of concerns  
+
+---
+
+## 🏗️ Architecture
+
+This project follows **Clean Architecture** principles with a clear separation of concerns:
+
+```
+┌─────────────────────────────────────────────────────┐
+│                  Controllers Layer                   │
+│         (HTTP Requests & Response Handling)          │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│                  Services Layer                      │
+│              (Business Logic)                        │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│              Repository Layer (TypeORM)              │
+│            (Data Access & Persistence)               │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│                 PostgreSQL Database                  │
+└─────────────────────────────────────────────────────┘
 ```
 
-## Running the app
+**Cross-Cutting Concerns**:
+- 🛡️ **Guards** - Authentication & Authorization
+- 🔄 **Interceptors** - Response transformation
+- 🚨 **Filters** - Exception handling
+- 📝 **Pipes** - Validation & transformation
+- 🎨 **Decorators** - Metadata & route enhancement
+
+---
+
+## 🛠️ Tech Stack
+
+### **Core Framework**
+- **NestJS** 10.x - Progressive Node.js framework
+- **TypeScript** - Strongly typed programming language
+- **Node.js** - JavaScript runtime
+
+### **Database & ORM**
+- **PostgreSQL** - Relational database
+- **TypeORM** 0.3.x - ORM for TypeScript and JavaScript
+- **typeorm-extension** - Extended TypeORM utilities
+
+### **Authentication & Security**
+- **Passport** - Authentication middleware
+- **passport-local** - Local authentication strategy
+- **passport-jwt** - JWT authentication strategy
+- **passport-google-oauth20** - Google OAuth 2.0 strategy
+- **@nestjs/jwt** - JWT utilities
+- **bcrypt** - Password hashing
+- **argon2** - Secure hashing for refresh tokens
+
+### **Validation & Transformation**
+- **class-validator** - Decorator-based validation
+- **class-transformer** - Object transformation
+- **Zod** - TypeScript-first schema validation
+- **Joi** - Schema validation
+
+### **Development Tools**
+- **@faker-js/faker** - Generate fake data for testing
+- **Jest** - Testing framework
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+
+---
+
+## 🚦 Getting Started
+
+### **Prerequisites**
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+Node.js >= 18.x
+PostgreSQL >= 14.x
+npm >= 9.x
 ```
 
-## Test
+### **Installation**
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/abdulrahmanmahmood/Preparty-manager-API.git
+cd Preparty-manager-API
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Set up environment variables**
+```bash
+# Create .env file in the root directory
+cp .env.example .env
+```
+
+Edit `.env` with your configuration:
+```env
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+DB_DATABASE=property_manager
+
+# JWT Configuration
+JWT_SECRET=your_super_secret_jwt_key
+JWT_EXPIRES_IN=1h
+REFRESH_JWT_SECRET=your_refresh_token_secret
+REFRESH_JWT_EXPIRES_IN=7d
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
+```
+
+4. **Set up the database**
+```bash
+# Create a PostgreSQL database
+createdb property_manager
+
+# Run database synchronization (development)
+npm run start:dev
+```
+
+5. **Seed the database (optional)**
+```bash
+npm run seed
+```
+
+### **Running the Application**
 
 ```bash
-# unit tests
-$ npm run test
+# Development mode with hot-reload
+npm run start:dev
 
-# e2e tests
-$ npm run test:e2e
+# Production mode
+npm run build
+npm run start:prod
 
-# test coverage
-$ npm run test:cov
+# Debug mode
+npm run start:debug
 ```
 
-## Support
+The API will be available at `http://localhost:3000`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## ⚙️ Configuration
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### **Database Configuration**
 
-## License
+The application uses environment-specific database configurations:
 
-Nest is [MIT licensed](LICENSE).
+- **Development**: `src/config/db.config.ts`
+- **Production**: `src/config/db.config.production.ts`
+
+### **JWT Configuration**
+
+- **Access Token**: `src/auth/config/jwt.config.ts`
+- **Refresh Token**: `src/auth/config/refresh-jwt.config.ts`
+
+### **OAuth Configuration**
+
+- **Google OAuth**: `src/config/google-oauth.config.ts`
+
+---
+
+## 📚 API Documentation
+
+### **Authentication Endpoints**
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/auth/signup` | Register new user | No |
+| POST | `/auth/login` | Login with email/password | No |
+| POST | `/auth/refresh` | Refresh access token | Yes (Refresh) |
+| POST | `/auth/logout` | Logout user | Yes |
+| GET | `/auth/google` | Initiate Google OAuth | No |
+| GET | `/auth/google/callback` | Google OAuth callback | No |
+
+### **User Endpoints**
+
+| Method | Endpoint | Description | Auth Required | Roles |
+|--------|----------|-------------|---------------|-------|
+| GET | `/users` | Get all users | Yes | ADMIN |
+| GET | `/users/:id` | Get user by ID | Yes | Any |
+| PATCH | `/users/:id` | Update user | Yes | Owner/ADMIN |
+| DELETE | `/users/:id` | Delete user | Yes | ADMIN |
+
+### **Property Endpoints**
+
+| Method | Endpoint | Description | Auth Required | Roles |
+|--------|----------|-------------|---------------|-------|
+| GET | `/properties` | Get all properties (paginated) | No | - |
+| GET | `/properties/:id` | Get property by ID | No | - |
+| POST | `/properties` | Create new property | Yes | EDITOR/ADMIN |
+| PATCH | `/properties/:id` | Update property | Yes | Owner/ADMIN |
+| DELETE | `/properties/:id` | Delete property | Yes | Owner/ADMIN |
+
+### **Request Examples**
+
+#### **Register User**
+```bash
+POST /auth/signup
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "password": "SecurePass123!",
+  "avatarUrl": "https://example.com/avatar.jpg"
+}
+```
+
+#### **Login**
+```bash
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "SecurePass123!"
+}
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+#### **Create Property**
+```bash
+POST /properties
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{
+  "name": "Luxury Villa",
+  "description": "Beautiful villa with ocean view",
+  "price": 500000
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Property created successfully",
+  "data": {
+    "id": 1,
+    "name": "Luxury Villa",
+    "description": "Beautiful villa with ocean view",
+    "price": 500000
+  }
+}
+```
+
+#### **Get Properties (Paginated)**
+```bash
+GET /properties?skip=0&limit=10
+```
+
+**Response:**
+```json
+{
+  "message": "Properties retrieved successfully",
+  "data": [...],
+  "total": 50,
+  "hasNextPage": true,
+  "hasPreviousPage": false
+}
+```
+
+---
+
+## 🔐 Authentication & Authorization
+
+### **Authentication Flow**
+
+1. **Registration/Login**
+   - User registers or logs in with credentials
+   - Server validates credentials
+   - Server generates access token (short-lived) and refresh token (long-lived)
+   - Refresh token is hashed with Argon2 and stored in database
+
+2. **API Access**
+   - Client includes access token in Authorization header
+   - JWT Guard validates token
+   - Request proceeds if valid
+
+3. **Token Refresh**
+   - When access token expires, client uses refresh token
+   - Server validates refresh token against hashed version
+   - New access and refresh tokens are generated
+
+4. **Logout**
+   - Refresh token hash is removed from database
+   - Client discards tokens
+
+### **Authorization Guards**
+
+```typescript
+// JWT Authentication Guard
+@UseGuards(JwtAuthGuard)
+@Get('profile')
+getProfile(@Request() req) {
+  return req.user;
+}
+
+// Role-Based Authorization
+@Roles(Role.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Delete(':id')
+deleteUser(@Param('id') id: string) {
+  return this.userService.remove(+id);
+}
+
+// Public Route (bypass authentication)
+@Public()
+@Get('public-data')
+getPublicData() {
+  return this.service.getPublicData();
+}
+```
+
+### **Security Best Practices Implemented**
+
+✅ Password hashing with bcrypt (10 rounds)  
+✅ Refresh token hashing with Argon2  
+✅ JWT with expiration times  
+✅ HTTP-only cookies for tokens (can be configured)  
+✅ Role-based access control  
+✅ Input validation and sanitization  
+✅ SQL injection prevention (TypeORM parameterization)  
+✅ Rate limiting (can be added)  
+✅ CORS configuration  
+
+---
+
+## 🗄️ Database Schema
+
+### **Entity Relationships**
+
+```
+User
+├── id (PK)
+├── firstName
+├── lastName
+├── email (unique)
+├── password (hashed)
+├── avatarUrl
+├── role (enum: ADMIN, EDITOR, USER)
+├── hashedRefreshToken
+├── createdAt
+└── properties (One-to-Many)
+
+Property
+├── id (PK)
+├── name
+├── description
+├── price
+├── ownerId (FK -> User)
+├── propertyTypeId (FK -> PropertyType)
+├── propertyFeature (One-to-One -> PropertyFeature)
+├── user (Many-to-One -> User)
+├── likedBy (Many-to-Many -> User)
+└── type (Many-to-One -> PropertyType)
+
+PropertyFeature
+├── id (PK)
+├── propertyId (FK -> Property)
+└── property (One-to-One -> Property)
+
+PropertyType
+├── id (PK)
+├── name
+└── properties (One-to-Many -> Property)
+```
+
+---
+
+
+
+## 📁 Project Structure
+
+```
+src/
+├── auth/                          # Authentication module
+│   ├── config/                    # JWT configurations
+│   ├── decorators/                # Custom decorators (@Public, @Roles)
+│   ├── enums/                     # Role enums
+│   ├── guards/                    # Authentication guards
+│   │   ├── google-auth/           # Google OAuth guard
+│   │   ├── jwt-auth/              # JWT authentication guard
+│   │   ├── local-auth/            # Local strategy guard
+│   │   ├── refresh-auth/          # Refresh token guard
+│   │   └── roles/                 # RBAC guard
+│   ├── strategies/                # Passport strategies
+│   ├── types/                     # TypeScript types/interfaces
+│   ├── auth.controller.ts         # Auth endpoints
+│   ├── auth.service.ts            # Auth business logic
+│   └── auth.module.ts             # Auth module definition
+│
+├── common/                        # Shared resources
+│   └── dto/                       # Common DTOs
+│       ├── api-response.dto.ts    # Standard API response
+│       └── paginated-response.dto.ts # Pagination response
+│
+├── config/                        # Application configuration
+│   ├── db.config.ts               # Database config (dev)
+│   ├── db.config.production.ts    # Database config (prod)
+│   └── google-oauth.config.ts     # OAuth configuration
+│
+├── entities/                      # TypeORM entities
+│   ├── user.entity.ts             # User entity
+│   ├── property.entity.ts         # Property entity
+│   ├── propertyFeature.entity.ts  # Property features entity
+│   └── propertyType.entity.ts     # Property types entity
+│
+├── property/                      # Property module
+│   ├── dto/                       # Data Transfer Objects
+│   │   ├── createProperty.dto.ts  # Create property DTO
+│   │   ├── createPropertyZod.dto.ts # Zod validation DTO
+│   │   ├── updateProperty.dto.ts  # Update property DTO
+│   │   ├── pagination.dto.ts      # Pagination DTO
+│   │   ├── headers.dto.ts         # Headers validation
+│   │   └── idParam.dto.ts         # ID parameter DTO
+│   ├── pipes/                     # Custom pipes
+│   │   ├── parseIdPipe.ts         # ID parsing pipe
+│   │   ├── request-header.ts      # Header validation pipe
+│   │   └── zodValidationPipe.ts   # Zod validation pipe
+│   ├── property.controller.ts     # Property endpoints
+│   ├── property.service.ts        # Property business logic
+│   └── property.module.ts         # Property module definition
+│
+├── user/                          # User module
+│   ├── dto/                       # User DTOs
+│   │   ├── create-user.dto.ts     # Create user DTO
+│   │   └── update-user.dto.ts     # Update user DTO
+│   ├── user.controller.ts         # User endpoints
+│   ├── user.service.ts            # User business logic
+│   └── user.module.ts             # User module definition
+│
+├── seeding/                       # Database seeding
+│   ├── main.seeder.ts             # Main seeder
+│   ├── property.factory.ts        # Property factory
+│   ├── propertyFeature.factory.ts # Property feature factory
+│   ├── user.factory.ts            # User factory
+│   └── seed.ts                    # Seed script
+│
+├── app.controller.ts              # Root controller
+├── app.service.ts                 # Root service
+├── app.module.ts                  # Root module
+└── main.ts                        # Application entry point
+
+test/                              # E2E tests
+├── app.e2e-spec.ts
+└── jest-e2e.json
+
+```
+
+---
+
+## 🎓 Learning Outcomes & Skills Demonstrated
+
+This project demonstrates proficiency in:
+
+### **Backend Development**
+- ✅ RESTful API design and implementation
+- ✅ Microservices architecture principles
+- ✅ Clean code and SOLID principles
+- ✅ Design patterns (Repository, Factory, Singleton)
+- ✅ Dependency injection and inversion of control
+
+### **Authentication & Security**
+- ✅ JWT-based authentication
+- ✅ OAuth 2.0 integration
+- ✅ Password hashing and security
+- ✅ Role-based access control
+- ✅ Security best practices
+
+### **Database Management**
+- ✅ ORM usage and best practices
+- ✅ Database design and relationships
+- ✅ Query optimization
+- ✅ Migrations and seeding
+- ✅ Transaction management
+
+### **TypeScript & NestJS**
+- ✅ Advanced TypeScript features
+- ✅ Decorators and metadata
+- ✅ Guards, interceptors, and pipes
+- ✅ Module architecture
+- ✅ Testing strategies
+
+### **Software Engineering**
+- ✅ Version control (Git)
+- ✅ Code documentation
+- ✅ Error handling
+- ✅ Logging and monitoring
+- ✅ Configuration management
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+
+## 👤 Author
+
+**Abdulrahman Mahmood**
+
+- GitHub: [@abdulrahmanmahmood](https://github.com/abdulrahmanmahmood)
+- Project: [Preparty-manager-API](https://github.com/abdulrahmanmahmood/Preparty-manager-API)
+
+---
+
+## 📞 Contact & Support
+
+For questions, issues, or suggestions:
+
+- 📧 Email: abdulrahmanmahmoudhos@gmail.com
+- 💼 LinkedIn: https://www.linkedin.com/in/abdulrahman-mahmoud-elsobky/
+- 🐛 Issues: [GitHub Issues](https://github.com/abdulrahmanmahmood/Preparty-manager-API/issues)
+
+---
+
+## 🙏 Acknowledgments
+
+- [NestJS](https://nestjs.com/) - The progressive Node.js framework
+- [TypeORM](https://typeorm.io/) - Amazing ORM for TypeScript
+- [PostgreSQL](https://www.postgresql.org/) - The world's most advanced open source database
+- [Passport](http://www.passportjs.org/) - Simple, unobtrusive authentication for Node.js
+
+---
+
+<div align="center">
+
+**⭐ If you find this project useful, please consider giving it a star! ⭐**
+
+Made with ❤️ and TypeScript
+
+</div>
